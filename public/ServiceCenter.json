@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "region": "Dhaka",
+    "district": "Dhaka",
+    "city": "Dhaka",
+    "covered_area": ["Uttara", "Dhanmondi", "Mirpur", "Gulshan"],
+    "status": "active",
+    "latitude": 23.8103,
+    "longitude": 90.4125
+  },
+  {
+    "id": 2,
+    "region": "Dhaka",
+    "district": "Gazipur",
+    "city": "Gazipur",
+    "covered_area": ["Tongi", "Joydebpur"],
+    "status": "active",
+    "latitude": 23.9999,
+    "longitude": 90.4203
+  },
+  {
+    "id": 3,
+    "region": "Dhaka",
+    "district": "Narayanganj",
+    "city": "Narayanganj",
+    "covered_area": ["Chashara", "Fatullah"],
+    "status": "active",
+    "latitude": 23.6238,
+    "longitude": 90.5010
+  },
+  {
+    "id": 4,
+    "region": "Chattogram",
+    "district": "Chattogram",
+    "city": "Chattogram",
+    "covered_area": ["Pahartali", "Agrabad", "Kotwali"],
+    "status": "active",
+    "latitude": 22.3569,
+    "longitude": 91.7832
+  },
+  {
+    "id": 5,
+    "region": "Chattogram",
+    "district": "Cox's Bazar",
+    "city": "Cox's Bazar",
+    "covered_area": ["Kolatoli", "Sugandha"],
+    "status": "active",
+    "latitude": 21.4272,
+    "longitude": 92.0058
+  },
+  {
+    "id": 6,
+    "region": "Sylhet",
+    "district": "Sylhet",
+    "city": "Sylhet",
+    "covered_area": ["Zindabazar", "Amberkhana"],
+    "status": "active",
+    "latitude": 24.8949,
+    "longitude": 91.8687
+  },
+  {
+    "id": 7,
+    "region": "Rajshahi",
+    "district": "Rajshahi",
+    "city": "Rajshahi",
+    "covered_area": ["Boalia", "Motihar"],
+    "status": "active",
+    "latitude": 24.3636,
+    "longitude": 88.6241
+  },
+  {
+    "id": 8,
+    "region": "Khulna",
+    "district": "Khulna",
+    "city": "Khulna",
+    "covered_area": ["Sonadanga", "Khalishpur"],
+    "status": "active",
+    "latitude": 22.8456,
+    "longitude": 89.5403
+  },
+  {
+    "id": 9,
+    "region": "Barishal",
+    "district": "Barishal",
+    "city": "Barishal",
+    "covered_area": ["Nathullabad", "Sagardi"],
+    "status": "active",
+    "latitude": 22.7010,
+    "longitude": 90.3535
+  },
+  {
+    "id": 10,
+    "region": "Rangpur",
+    "district": "Rangpur",
+    "city": "Rangpur",
+    "covered_area": ["Jahaj Company", "Mahiganj"],
+    "status": "active",
+    "latitude": 25.7439,
+    "longitude": 89.2752
+  },
+  {
+    "id": 11,
+    "region": "Mymensingh",
+    "district": "Mymensingh",
+    "city": "Mymensingh",
+    "covered_area": ["Town Hall", "Maskanda"],
+    "status": "active",
+    "latitude": 24.7471,
+    "longitude": 90.4203
+  },
+  {
+    "id": 12,
+    "region": "Dhaka",
+    "district": "Narsingdi",
+    "city": "Narsingdi",
+    "covered_area": ["Madhabdi", "Shibpur"],
+    "status": "active",
+    "latitude": 23.9322,
+    "longitude": 90.7154
+  },
+  {
+    "id": 13,
+    "region": "Chattogram",
+    "district": "Feni",
+    "city": "Feni",
+    "covered_area": ["Trunk Road", "Sadar"],
+    "status": "active",
+    "latitude": 23.0159,
+    "longitude": 91.3976
+  },
+  {
+    "id": 14,
+    "region": "Sylhet",
+    "district": "Moulvibazar",
+    "city": "Moulvibazar",
+    "covered_area": ["Kulaura", "Sreemangal"],
+    "status": "active",
+    "latitude": 24.4829,
+    "longitude": 91.7774
+  },
+  {
+    "id": 15,
+    "region": "Khulna",
+    "district": "Jessore",
+    "city": "Jessore",
+    "covered_area": ["Chanchra", "Rail Gate"],
+    "status": "active",
+    "latitude": 23.1667,
+    "longitude": 89.2167
+  },
+  {
+    "id": 16,
+    "region": "Rajshahi",
+    "district": "Bogura",
+    "city": "Bogura",
+    "covered_area": ["Satmatha", "Nawab Bari"],
+    "status": "active",
+    "latitude": 24.8465,
+    "longitude": 89.3773
+  },
+  {
+    "id": 17,
+    "region": "Barishal",
+    "district": "Patuakhali",
+    "city": "Patuakhali",
+    "covered_area": ["Sadar", "Kalapara"],
+    "status": "active",
+    "latitude": 22.3596,
+    "longitude": 90.3299
+  },
+  {
+    "id": 18,
+    "region": "Rangpur",
+    "district": "Dinajpur",
+    "city": "Dinajpur",
+    "covered_area": ["Sadar", "Birganj"],
+    "status": "active",
+    "latitude": 25.6279,
+    "longitude": 88.6332
+  },
+  {
+    "id": 19,
+    "region": "Mymensingh",
+    "district": "Jamalpur",
+    "city": "Jamalpur",
+    "covered_area": ["Narundi", "Melandah"],
+    "status": "active",
+    "latitude": 24.9375,
+    "longitude": 89.9370
+  },
+  {
+    "id": 20,
+    "region": "Dhaka",
+    "district": "Manikganj",
+    "city": "Manikganj",
+    "covered_area": ["Saturia", "Singair"],
+    "status": "active",
+    "latitude": 23.8602,
+    "longitude": 90.0012
+  }
+]
