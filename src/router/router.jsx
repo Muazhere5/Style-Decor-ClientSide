@@ -10,6 +10,9 @@ import Coverage from "../pages/Coverage/Coverage";
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 
+// ✅ Booking Page
+import Booking from "../pages/Booking/Booking";
+
 // Dashboard Layout
 import DashboardLayout from "../layouts/DashboardLayout";
 
@@ -35,6 +38,17 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/track", element: <TrackService /> },
       { path: "/coverage", element: <Coverage /> },
+
+      // ✅ Booking (Login Required)
+      {
+        path: "/booking",
+        element: (
+          <PrivateRoute>
+            <Booking />
+          </PrivateRoute>
+        ),
+      },
+
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
     ],
@@ -67,7 +81,7 @@ const router = createBrowserRouter([
       { path: "assigned-services", element: <AssignedService /> },
       { path: "completed-services", element: <CompletedService /> },
 
-      // Admin (TEMP OPEN)
+      // Admin (still TEMP OPEN as you mentioned)
       { path: "users", element: <UserManagement /> },
       { path: "approve-decorator", element: <ApproveDecorator /> },
     ],
