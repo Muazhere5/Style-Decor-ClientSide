@@ -3,6 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import useAxios from "../../hooks/useAxios";
+import axios from "axios";
+
+const imageHostingKey = import.meta.env.VITE_IMGBB_API_KEY;
+const imageUploadURL = `https://api.imgbb.com/1/upload?key=${imageHostingKey}`;
 
 const Register = () => {
   const { createUser, updateUserProfile } = useAuth();
@@ -13,26 +17,44 @@ const Register = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   const onSubmit = async data => {
     try {
-      // Firebase user create
+      /* ================= IMAGE UPLOAD ================= */
+      const imageFile = { image: data.photo[0] };
+
+      const imgRes = await axios.post(imageUploadURL, imageFile, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (!imgRes.data.success) {
+        toast.error("❌ Image upload failed");
+        return;
+      }
+
+      const photoURL = imgRes.data.data.display_url;
+
+      /* ================= FIREBASE USER ================= */
       const result = await createUser(data.email, data.password);
 
-      // Update profile
-      await updateUserProfile(data.name, data.photo);
+      await updateUserProfile(data.name, photoURL);
 
-      // Save user in DB
+      /* ================= SAVE USER IN DB ================= */
       await axiosPublic.post("/users", {
         name: data.name,
         email: data.email,
-        photo: data.photo,
+        photo: photoURL,
       });
 
       toast.success("🎉 Account created successfully!");
+      reset();
       navigate("/login");
     } catch (error) {
+      console.error(error);
       toast.error("❌ Registration failed");
     }
   };
@@ -62,15 +84,18 @@ const Register = () => {
           )}
         </div>
 
-        {/* Photo */}
+        {/* Photo Upload */}
         <div>
-          <label className="font-semibold">Photo URL</label>
+          <label className="font-semibold">Profile Photo</label>
           <input
-            type="text"
-            placeholder="PostImage profile photo URL"
-            className="input input-bordered w-full mt-1"
+            type="file"
+            accept="image/*"
+            className="file-input file-input-bordered w-full mt-1"
             {...register("photo", { required: true })}
           />
+          {errors.photo && (
+            <p className="text-error text-sm">Photo is required</p>
+          )}
         </div>
 
         {/* Email */}

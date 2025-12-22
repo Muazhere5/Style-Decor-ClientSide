@@ -15,9 +15,9 @@ const useAxiosSecure = () => {
   useEffect(() => {
     // REQUEST INTERCEPTOR
     const requestInterceptor = axiosSecure.interceptors.request.use(
-      config => {
-        const token = localStorage.getItem("styledecor-token");
-        if (token) {
+      async config => {
+        if (user) {
+          const token = await user.getIdToken(); // 🔑 Firebase ID Token
           config.headers.authorization = `Bearer ${token}`;
         }
         return config;
@@ -31,7 +31,6 @@ const useAxiosSecure = () => {
       async error => {
         if (error.response?.status === 401 || error.response?.status === 403) {
           await logOut();
-          localStorage.removeItem("styledecor-token");
           navigate("/login");
         }
         return Promise.reject(error);
