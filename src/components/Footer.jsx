@@ -7,7 +7,7 @@ const Footer = () => {
         <div>
           {/* 🔗 PUT YOUR POSTIMAGE LOGO LINK HERE */}
           <img
-            src="https://i.postimg.cc/YOUR-LOGO.png"
+            src="https://i.postimg.cc/VvDRzKJS/Style-Decor-Logo.png"
             className="w-14 mb-3"
             alt="logo"
           />

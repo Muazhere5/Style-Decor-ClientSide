@@ -18,9 +18,8 @@ const Navbar = () => {
         {/* ================= LEFT: LOGO ================= */}
         <div className="navbar-start">
           <Link to="/" className="flex items-center gap-3">
-            {/* 🔗 PUT YOUR POSTIMAGE LOGO LINK HERE */}
             <img
-              src="https://i.postimg.cc/YOUR-LOGO.png"
+              src="https://i.postimg.cc/VvDRzKJS/Style-Decor-Logo.png"
               alt="StyleDecor Logo"
               className="w-12 h-12 rounded-full"
             />
@@ -34,7 +33,7 @@ const Navbar = () => {
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal gap-6 text-base">
             <li><NavLink to="/" className={navLinkClass}>Home</NavLink></li>
-            <li><NavLink to="/services" className={navLinkClass}>Services</NavLink></li>
+            <li><NavLink to="/booking" className={navLinkClass}>Booking</NavLink></li>
             <li><NavLink to="/coverage" className={navLinkClass}>Coverage</NavLink></li>
             <li><NavLink to="/track" className={navLinkClass}>Track Service</NavLink></li>
           </ul>
@@ -98,6 +97,7 @@ const Navbar = () => {
 
                   <li>
                     <button
+                      type="button" // ✅ important for logout
                       onClick={logOut}
                       className="btn btn-secondary w-full"
                     >
