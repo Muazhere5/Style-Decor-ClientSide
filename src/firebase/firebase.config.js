@@ -1,6 +1,9 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
+/* ============================
+   FIREBASE CONFIG (VITE)
+============================ */
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -10,6 +13,16 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+/* ============================
+   PREVENT DUPLICATE INIT
+============================ */
+const app = getApps().length === 0
+  ? initializeApp(firebaseConfig)
+  : getApp();
+
+/* ============================
+   AUTH EXPORT
+============================ */
 export const auth = getAuth(app);
+
 export default app;

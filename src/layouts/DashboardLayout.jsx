@@ -16,7 +16,7 @@ import useRole from "../hooks/useRole";
 
 const DashboardLayout = () => {
   const { user, logOut } = useAuth();
-  const { role, roleLoading } = useRole(); // ✅ FIXED
+  const { role, roleLoading } = useRole();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,7 +25,6 @@ const DashboardLayout = () => {
   if (roleLoading) {
     return (
       <div className="loading-indicator">
-        {/* put your postimage logo here */}
         <img
           src="https://i.postimg.cc/XXXXXX/styledecor-logo.png"
           alt="Loading"
@@ -35,9 +34,16 @@ const DashboardLayout = () => {
     );
   }
 
+  /* =========================
+     LOGOUT (FIXED)
+  ========================= */
   const handleLogout = async () => {
-    await logOut();
-    navigate("/login");
+    try {
+      await logOut();
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   /* =========================
@@ -69,7 +75,6 @@ const DashboardLayout = () => {
           <FiMenu className="text-2xl" />
         </button>
 
-        {/* Logo */}
         <img
           src="https://i.postimg.cc/XXXXXX/styledecor-logo.png"
           alt="StyleDecor"
@@ -97,7 +102,7 @@ const DashboardLayout = () => {
         {/* LOGO */}
         <div className="p-6 border-b">
           <img
-            src="https://i.postimg.cc/XXXXXX/styledecor-logo.png"
+            src="https://i.postimg.cc/VvDRzKJS/Style-Decor-Logo.png"
             alt="StyleDecor"
             className="w-32 mx-auto"
           />
@@ -122,23 +127,51 @@ const DashboardLayout = () => {
 
           {role === "user" && (
             <>
-              <NavItem to="/dashboard/my-services" icon={<MdDesignServices />} label="My Bookings" />
-              <NavItem to="/dashboard/payment-history" icon={<MdPayment />} label="Payment History" />
+              <NavItem
+                to="/dashboard/my-services"
+                icon={<MdDesignServices />}
+                label="My Bookings"
+              />
+              <NavItem
+                to="/dashboard/payment-history"
+                icon={<MdPayment />}
+                label="Payment History"
+              />
             </>
           )}
 
           {role === "decorator" && (
             <>
-              <NavItem to="/dashboard/assigned-services" icon={<FiCheckCircle />} label="Assigned Services" />
-              <NavItem to="/dashboard/completed-services" icon={<FiHome />} label="Completed Services" />
+              <NavItem
+                to="/dashboard/assigned-services"
+                icon={<FiCheckCircle />}
+                label="Assigned Services"
+              />
+              <NavItem
+                to="/dashboard/completed-services"
+                icon={<FiHome />}
+                label="Completed Services"
+              />
             </>
           )}
 
           {role === "admin" && (
             <>
-              <NavItem to="/dashboard/admin-home" icon={<FiHome />} label="Admin Home" />
-              <NavItem to="/dashboard/users" icon={<FiUsers />} label="User Management" />
-              <NavItem to="/dashboard/approve-decorator" icon={<FiUser />} label="Approve Decorators" />
+              <NavItem
+                to="/dashboard/admin-home"
+                icon={<FiHome />}
+                label="Admin Home"
+              />
+              <NavItem
+                to="/dashboard/users"
+                icon={<FiUsers />}
+                label="User Management"
+              />
+              <NavItem
+                to="/dashboard/approve-decorator"
+                icon={<FiUser />}
+                label="Approve Decorators"
+              />
             </>
           )}
         </nav>
@@ -158,7 +191,6 @@ const DashboardLayout = () => {
           MAIN CONTENT
       ========================= */}
       <main className="flex-1 lg:ml-0 pt-16 lg:pt-0 p-6 overflow-y-auto">
-        {/* BREADCRUMB / TITLE */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">{pageTitle}</h1>
           <p className="text-sm text-gray-500">

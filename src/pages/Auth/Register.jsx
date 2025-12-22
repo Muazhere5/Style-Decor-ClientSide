@@ -24,7 +24,7 @@ const Register = () => {
     try {
       /* ================= IMAGE UPLOAD ================= */
       const formData = new FormData();
-      formData.append("image", data.photo[0]); // proper FormData
+      formData.append("image", data.photo[0]);
 
       const imgRes = await axios.post(imageUploadURL, formData);
 
@@ -36,8 +36,7 @@ const Register = () => {
       const photoURL = imgRes.data.data.display_url;
 
       /* ================= FIREBASE USER ================= */
-      const result = await createUser(data.email, data.password);
-
+      await createUser(data.email, data.password);
       await updateUserProfile(data.name, photoURL);
 
       /* ================= SAVE USER IN DB ================= */
@@ -52,7 +51,6 @@ const Register = () => {
       navigate("/login");
     } catch (error) {
       console.error(error);
-      // Better error messages for clarity
       if (error.code === "auth/email-already-in-use") {
         toast.error("❌ Email already exists! Try logging in.");
       } else {
@@ -86,7 +84,7 @@ const Register = () => {
           )}
         </div>
 
-        {/* Photo Upload */}
+        {/* Photo */}
         <div>
           <label className="font-semibold">Profile Photo</label>
           <input
@@ -118,10 +116,7 @@ const Register = () => {
             type="password"
             placeholder="At least 6 characters"
             className="input input-bordered w-full mt-1"
-            {...register("password", {
-              required: true,
-              minLength: 6,
-            })}
+            {...register("password", { required: true, minLength: 6 })}
           />
           {errors.password && (
             <p className="text-error text-sm">

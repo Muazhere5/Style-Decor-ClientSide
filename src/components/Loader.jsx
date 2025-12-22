@@ -5,7 +5,7 @@ const Loader = () => {
         
         {/* 🔗 PUT YOUR POSTIMAGE LOGO LINK HERE */}
         <img
-          src="https://i.postimg.cc/YOUR-LOGO.png"
+          src="https://i.postimg.cc/VvDRzKJS/Style-Decor-Logo.png"
           alt="Loading..."
           className="w-20 animate-bounce"
         />

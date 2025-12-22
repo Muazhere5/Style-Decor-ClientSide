@@ -13,11 +13,10 @@ const useAxiosSecure = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // REQUEST INTERCEPTOR
     const requestInterceptor = axiosSecure.interceptors.request.use(
       async config => {
         if (user) {
-          const token = await user.getIdToken(); // 🔑 Firebase ID Token
+          const token = await user.getIdToken();
           config.headers.authorization = `Bearer ${token}`;
         }
         return config;
@@ -25,13 +24,14 @@ const useAxiosSecure = () => {
       error => Promise.reject(error)
     );
 
-    // RESPONSE INTERCEPTOR
     const responseInterceptor = axiosSecure.interceptors.response.use(
       response => response,
       async error => {
-        if (error.response?.status === 401 || error.response?.status === 403) {
+        // ✅ FIX: ONLY logout on 401
+        if (error.response?.status === 401) {
           await logOut();
-          navigate("/login");
+          localStorage.removeItem("styledecor-token");
+          navigate("/login", { replace: true });
         }
         return Promise.reject(error);
       }

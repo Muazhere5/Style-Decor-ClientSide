@@ -6,14 +6,12 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  signInWithPopup
+  signInWithPopup,
 } from "firebase/auth";
-import axios from "axios";
 import { auth } from "../firebase/firebase.config";
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "../contexts/AuthContext"; // ✅ FIXED PATH
 
 const googleProvider = new GoogleAuthProvider();
-const API = import.meta.env.VITE_API_URL;
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -37,24 +35,21 @@ const AuthProvider = ({ children }) => {
       photoURL: photo,
     });
 
-  const logout = () => signOut(auth);
+  // ✅ FIXED NAME + CLEAR USER
+  const logOut = async () => {
+    setLoading(true);
+    await signOut(auth);
+    setUser(null);
+    setLoading(false);
+  };
 
   /* ======================
      AUTH STATE OBSERVER
   ====================== */
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
       setLoading(false);
-
-      if (currentUser?.email) {
-        const res = await axios.post(`${API}/jwt`, {
-          email: currentUser.email,
-        });
-        localStorage.setItem("access-token", res.data.token);
-      } else {
-        localStorage.removeItem("access-token");
-      }
     });
 
     return () => unsubscribe();
@@ -67,7 +62,7 @@ const AuthProvider = ({ children }) => {
     loginUser,
     googleLogin,
     updateUserProfile,
-    logout,
+    logOut, // ✅ MATCHES DashboardLayout
   };
 
   return (

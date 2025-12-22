@@ -8,6 +8,40 @@ import { FaStar, FaQuoteLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Home = () => {
+  // Array of 6 slider images with unique titles and subtitles
+  const sliderData = [
+    {
+      url: "https://i.postimg.cc/26DWKgzy/Gemini-Generated-Image-7cl1cy7cl1cy7cl1.png",
+      title: "Elegant Wedding Setup",
+      subtitle: "A dreamy wedding decor designed to impress your guests."
+    },
+    {
+      url: "https://i.postimg.cc/Dz2JQL5y/Luxury-Living-Room.png",
+      title: "Luxury Living Room",
+      subtitle: "Transform your living space into a luxurious haven."
+    },
+    {
+      url: "https://i.postimg.cc/XJdRVBSg/Festive-Celebration.png",
+      title: "Festive Celebration",
+      subtitle: "Bright, colorful, and joyous decorations for every occasion."
+    },
+    {
+      url: "https://i.postimg.cc/HnQ84zGM/Outdoor-Garden-Event.png",
+      title: "Outdoor Garden Event",
+      subtitle: "Create magical outdoor memories with stunning decor."
+    },
+    {
+      url: "https://i.postimg.cc/c1msY22D/Corporate-Event-Setup.png",
+      title: "Corporate Event Setup",
+      subtitle: "Professional and sleek decorations for business events."
+    },
+    {
+      url: "https://i.postimg.cc/jqkFGh7D/Birthday-Celebration.png",
+      title: "Birthday Celebration",
+      subtitle: "Fun and vibrant decoration for birthdays and parties."
+    },
+  ];
+
   return (
     <div className="space-y-24 overflow-hidden">
 
@@ -15,9 +49,8 @@ const Home = () => {
           HERO / BANNER SECTION
       ====================================================== */}
       <section className="relative min-h-[90vh] flex items-center justify-center">
-        {/* 🔴 PUT YOUR HERO / BANNER IMAGE FROM POSTIMAGES HERE */}
         <img
-          src="https://i.postimg.cc/XXXXXX/hero-banner.jpg" // ← postimage hero banner
+          src="https://i.postimg.cc/kGpMStG8/Gemini-Generated-Image-mma6ofmma6ofmma6.png" // ← postimage hero banner
           alt="StyleDecor Banner"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -76,22 +109,17 @@ const Home = () => {
             1024: { slidesPerView: 3 },
           }}
         >
-          {[1, 2, 3, 4, 5, 6].map((item) => (
-            <SwiperSlide key={item}>
+          {sliderData.map((slide, index) => (
+            <SwiperSlide key={index}>
               <div className="card overflow-hidden">
-                {/* 🔴 PUT YOUR SLIDER IMAGES FROM POSTIMAGES HERE */}
                 <img
-                  src={`https://i.postimg.cc/XXXXXX/slider-${item}.jpg`} // ← postimage slider images
-                  alt="Decoration Setup"
+                  src={slide.url}
+                  alt={slide.title}
                   className="h-64 w-full object-cover"
                 />
                 <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2">
-                    Premium Decoration #{item}
-                  </h3>
-                  <p className="text-gray-500 mb-4">
-                    Designed with elegance, executed with perfection.
-                  </p>
+                  <h3 className="text-xl font-bold mb-2">{slide.title}</h3>
+                  <p className="text-gray-500 mb-4">{slide.subtitle}</p>
                   <Link to="/services" className="btn btn-outline w-full">
                     View Service
                   </Link>

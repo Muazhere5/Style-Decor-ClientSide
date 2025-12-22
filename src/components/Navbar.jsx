@@ -1,15 +1,26 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logOut } = useAuth(); // ✅ FIXED NAME
   const { role } = useRole();
+  const navigate = useNavigate(); // ✅ added
 
   const navLinkClass = ({ isActive }) =>
     isActive
       ? "text-style-secondary font-bold"
       : "hover:text-style-secondary transition font-semibold";
+
+  // ✅ FIXED LOGOUT HANDLER
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Navbar logout failed:", error);
+    }
+  };
 
   return (
     <div className="sticky top-0 z-50 bg-base-100 shadow-md">
@@ -97,8 +108,8 @@ const Navbar = () => {
 
                   <li>
                     <button
-                      type="button" // ✅ important for logout
-                      onClick={logOut}
+                      type="button"
+                      onClick={handleLogout} // ✅ FIXED
                       className="btn btn-secondary w-full"
                     >
                       Logout
