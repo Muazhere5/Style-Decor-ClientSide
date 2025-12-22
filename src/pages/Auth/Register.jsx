@@ -23,13 +23,10 @@ const Register = () => {
   const onSubmit = async data => {
     try {
       /* ================= IMAGE UPLOAD ================= */
-      const imageFile = { image: data.photo[0] };
+      const formData = new FormData();
+      formData.append("image", data.photo[0]); // proper FormData
 
-      const imgRes = await axios.post(imageUploadURL, imageFile, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const imgRes = await axios.post(imageUploadURL, formData);
 
       if (!imgRes.data.success) {
         toast.error("❌ Image upload failed");
@@ -55,7 +52,12 @@ const Register = () => {
       navigate("/login");
     } catch (error) {
       console.error(error);
-      toast.error("❌ Registration failed");
+      // Better error messages for clarity
+      if (error.code === "auth/email-already-in-use") {
+        toast.error("❌ Email already exists! Try logging in.");
+      } else {
+        toast.error("❌ Registration failed");
+      }
     }
   };
 

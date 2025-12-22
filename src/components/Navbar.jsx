@@ -3,7 +3,7 @@ import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
 
 const Navbar = () => {
-  const { user, logOut } = useAuth();
+  const { user, logout } = useAuth();
   const { role } = useRole();
 
   const navLinkClass = ({ isActive }) =>
