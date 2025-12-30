@@ -4,11 +4,10 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import { FaStar, FaQuoteLeft } from "react-icons/fa";
+import { FaStar, FaQuoteLeft, FaHeart, FaClipboardList } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  // Array of 6 slider images with unique titles and subtitles
   const sliderData = [
     {
       url: "https://i.postimg.cc/26DWKgzy/Gemini-Generated-Image-7cl1cy7cl1cy7cl1.png",
@@ -45,17 +44,14 @@ const Home = () => {
   return (
     <div className="space-y-24 overflow-hidden">
 
-      {/* =====================================================
-          HERO / BANNER SECTION
-      ====================================================== */}
+      {/* HERO SECTION */}
       <section className="relative min-h-[90vh] flex items-center justify-center">
         <img
-          src="https://i.postimg.cc/kGpMStG8/Gemini-Generated-Image-mma6ofmma6ofmma6.png" // ← postimage hero banner
+          src="https://i.postimg.cc/kGpMStG8/Gemini-Generated-Image-mma6ofmma6ofmma6.png"
           alt="StyleDecor Banner"
           className="absolute inset-0 w-full h-full object-cover"
         />
 
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/50"></div>
 
         <motion.div
@@ -76,6 +72,7 @@ const Home = () => {
             <Link to="/services" className="btn btn-primary text-lg px-10">
               Explore Services
             </Link>
+
             <Link to="/coverage" className="btn btn-secondary text-lg px-10">
               Coverage Map
             </Link>
@@ -83,23 +80,19 @@ const Home = () => {
         </motion.div>
       </section>
 
-      {/* =====================================================
-          SWIPER SLIDER – FEATURED DECORATIONS
-      ====================================================== */}
+      {/* SLIDER SECTION */}
       <section className="container mx-auto px-6">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
           Signature Decoration Projects
         </h2>
+
         <p className="text-center text-gray-500 max-w-xl mx-auto mb-10">
           Hand-crafted decoration experiences designed by our professional decorators.
         </p>
 
         <Swiper
           modules={[Autoplay, Pagination]}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-          }}
+          autoplay={{ delay: 2500, disableOnInteraction: false }}
           pagination={{ clickable: true }}
           loop={true}
           spaceBetween={30}
@@ -109,30 +102,44 @@ const Home = () => {
             1024: { slidesPerView: 3 },
           }}
         >
-          {sliderData.map((slide, index) => (
-            <SwiperSlide key={index}>
-              <div className="card overflow-hidden">
-                <img
-                  src={slide.url}
-                  alt={slide.title}
-                  className="h-64 w-full object-cover"
-                />
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2">{slide.title}</h3>
-                  <p className="text-gray-500 mb-4">{slide.subtitle}</p>
-                  <Link to="/services" className="btn btn-outline w-full">
-                    View Service
-                  </Link>
+          {sliderData.map((slide, index) => {
+            const bookings = Math.floor(Math.random() * 400) + 50;
+            const loves = Math.floor(Math.random() * 300) + 30;
+
+            return (
+              <SwiperSlide key={index}>
+                <div className="card overflow-hidden">
+                  <img
+                    src={slide.url}
+                    alt={slide.title}
+                    className="h-64 w-full object-cover"
+                  />
+
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-2">{slide.title}</h3>
+                    <p className="text-gray-500 mb-4">{slide.subtitle}</p>
+
+                    {/* 🔥 REPLACED SECTION */}
+                    <div className="flex justify-between items-center mt-4 text-sm">
+                      <div className="flex items-center gap-2 text-purple-600 font-semibold">
+                        <FaClipboardList />
+                        {bookings}+ Bookings
+                      </div>
+
+                      <div className="flex items-center gap-2 text-pink-600 font-semibold">
+                        <FaHeart />
+                        {loves}+ Love
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </SwiperSlide>
-          ))}
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
       </section>
 
-      {/* =====================================================
-          CUSTOMER REVIEWS SECTION (REALISTIC)
-      ====================================================== */}
+      {/* REVIEWS */}
       <section className="bg-base-200 py-20">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-14">
@@ -141,30 +148,12 @@ const Home = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {[
-              {
-                name: "Ayesha Rahman",
-                img: "https://randomuser.me/api/portraits/women/44.jpg",
-              },
-              {
-                name: "Mehedi Hasan",
-                img: "https://randomuser.me/api/portraits/men/32.jpg",
-              },
-              {
-                name: "Nusrat Jahan",
-                img: "https://randomuser.me/api/portraits/women/68.jpg",
-              },
-              {
-                name: "Tanvir Ahmed",
-                img: "https://randomuser.me/api/portraits/men/75.jpg",
-              },
-              {
-                name: "Farzana Akter",
-                img: "https://randomuser.me/api/portraits/women/12.jpg",
-              },
-              {
-                name: "Sabbir Hossain",
-                img: "https://randomuser.me/api/portraits/men/19.jpg",
-              },
+              { name: "Ayesha Rahman", img: "https://randomuser.me/api/portraits/women/44.jpg" },
+              { name: "Mehedi Hasan", img: "https://randomuser.me/api/portraits/men/32.jpg" },
+              { name: "Nusrat Jahan", img: "https://randomuser.me/api/portraits/women/68.jpg" },
+              { name: "Tanvir Ahmed", img: "https://randomuser.me/api/portraits/men/75.jpg" },
+              { name: "Farzana Akter", img: "https://randomuser.me/api/portraits/women/12.jpg" },
+              { name: "Sabbir Hossain", img: "https://randomuser.me/api/portraits/men/19.jpg" },
             ].map((review, index) => (
               <motion.div
                 key={index}
@@ -172,10 +161,8 @@ const Home = () => {
                 className="card p-8"
               >
                 <FaQuoteLeft className="text-4xl text-style-primary mb-4" />
-
                 <p className="text-gray-600 mb-6">
                   From planning to execution, StyleDecor handled everything flawlessly.
-                  Our event looked stunning and stress-free.
                 </p>
 
                 <div className="flex items-center gap-4">
@@ -184,7 +171,6 @@ const Home = () => {
                     alt={review.name}
                     className="w-14 h-14 rounded-full object-cover"
                   />
-
                   <div>
                     <h4 className="font-bold">{review.name}</h4>
                     <div className="flex text-yellow-400">
@@ -200,9 +186,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* =====================================================
-          CREATIVE SECTION – WHY STYLEDECOR
-      ====================================================== */}
+      {/* CTA */}
       <section className="container mx-auto px-6 pb-20">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-14">
           Why StyleDecor is Different
@@ -232,12 +216,11 @@ const Home = () => {
         </div>
 
         <div className="mt-16 text-center">
-          <Link to="/services" className="btn btn-primary text-lg px-12">
+          <Link to="/booking" className="btn btn-primary text-lg px-12">
             Book Your Decoration
           </Link>
         </div>
       </section>
-
     </div>
   );
 };

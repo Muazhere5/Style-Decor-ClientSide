@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "styledecor-27d33",
+    "prod": "styledecor-27d33"
+  },
+  "targets": {},
+  "etags": {}
+}

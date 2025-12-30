@@ -1,128 +1,168 @@
-import { useState } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
 const TrackService = () => {
-  const [trackingNo, setTrackingNo] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [trackingData, setTrackingData] = useState([]);
+  const axiosSecure = useAxiosSecure();
+  const [completedBookings, setCompletedBookings] = useState([]);
+  const [chartData, setChartData] = useState([]);
 
-  /* ============================
-     HANDLE TRACK SERVICE
-  ============================ */
-  const handleTrack = async e => {
-    e.preventDefault();
+  /* ===============================
+     LOAD COMPLETED BOOKINGS
+  =============================== */
+  const loadCompletedBookings = async () => {
+    const res = await axiosSecure.get("/bookings/completed");
+    setCompletedBookings(res.data);
+    prepareChartData(res.data);
+  };
 
-    if (!trackingNo) {
-      toast.error("Please enter your tracking number");
-      return;
-    }
+  useEffect(() => {
+    loadCompletedBookings();
+  }, []);
 
-    try {
-      setLoading(true);
-      setTrackingData([]);
+  /* ===============================
+     PREPARE CHART DATA
+  =============================== */
+  const prepareChartData = bookings => {
+    const grouped = {};
 
-      // 🔗 Backend tracking endpoint
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/tracking/${trackingNo}`
-      );
+    bookings.forEach(b => {
+      const month = new Date(b.createdAt).toLocaleString("default", {
+        month: "short",
+      });
+      grouped[month] = (grouped[month] || 0) + 1;
+    });
 
-      if (res.data.length === 0) {
-        toast.error("No tracking information found");
-      } else {
-        setTrackingData(res.data);
-        toast.success("Tracking data loaded successfully");
-      }
-    } catch (error) {
-      toast.error("Failed to track service");
-    } finally {
-      setLoading(false);
+    const data = Object.keys(grouped).map(m => ({
+      month: m,
+      completed: grouped[m],
+    }));
+
+    setChartData(data);
+  };
+
+  /* ===============================
+     DELETE BOOKING
+  =============================== */
+  const handleDelete = async id => {
+    const confirm = await Swal.fire({
+      title: "Delete Completed Booking?",
+      text: "This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#9333ea",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Delete",
+    });
+
+    if (confirm.isConfirmed) {
+      await axiosSecure.delete(`/bookings/${id}`);
+      Swal.fire("Deleted!", "Booking has been removed.", "success");
+      loadCompletedBookings();
     }
   };
 
   return (
-    <section className="py-20 bg-base-100">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* ============================
-            HEADER
-        ============================ */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-neutral mb-4">
-            Track Your Decoration Service
-          </h1>
-          <p className="text-gray-600 max-w-xl mx-auto">
-            Enter your tracking number to see the real-time progress of your
-            decoration service.
-          </p>
-        </div>
+    <div className="p-6 space-y-12">
 
-        {/* ============================
-            TRACK FORM
-        ============================ */}
-        <form
-          onSubmit={handleTrack}
-          className="card p-8 mb-12 border border-gray-200"
-        >
-          <label className="font-bold mb-2 block text-neutral">
-            Tracking Number
-          </label>
+      {/* ===============================
+         HEADER
+      =============================== */}
+      <div>
+        <h1 className="text-3xl font-bold text-purple-600">
+          Service Status & Payments
+        </h1>
+        <p className="text-gray-500">
+          Analytics & completed service tracking
+        </p>
+      </div>
 
-          <div className="flex gap-4 flex-col sm:flex-row">
-            <input
-              type="text"
-              placeholder="Enter 6-digit tracking number"
-              className="input input-bordered w-full text-lg"
-              value={trackingNo}
-              onChange={e => setTrackingNo(e.target.value)}
+      {/* ===============================
+         GRAPH
+      =============================== */}
+      <div className="bg-white p-6 rounded-xl shadow-md">
+        <h2 className="text-xl font-semibold mb-4 text-purple-600">
+          Completed Services Overview
+        </h2>
+
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart data={chartData}>
+            <defs>
+              <linearGradient id="colorPurple" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#a855f7" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+
+            <XAxis dataKey="month" />
+            <YAxis allowDecimals={false} />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="completed"
+              stroke="#9333ea"
+              fillOpacity={1}
+              fill="url(#colorPurple)"
             />
+          </AreaChart>
+        </ResponsiveContainer>
 
-            <button
-              type="submit"
-              className="btn btn-primary text-lg min-w-[160px]"
-            >
-              Track Service
-            </button>
-          </div>
-        </form>
+        <p className="mt-4 text-sm text-gray-600">
+          Total Completed Bookings:{" "}
+          <span className="font-bold text-purple-600">
+            {completedBookings.length}
+          </span>
+        </p>
+      </div>
 
-        {/* ============================
-            LOADING STATE
-        ============================ */}
-        {loading && (
-          <div className="flex justify-center py-10">
-            <span className="loading loading-spinner loading-lg text-primary"></span>
-          </div>
-        )}
+      {/* ===============================
+         DELETE DROPDOWN
+      =============================== */}
+      <div className="bg-white p-6 rounded-xl shadow-md">
+        <h2 className="text-xl font-semibold mb-4 text-purple-600">
+          Delete Booking
+        </h2>
 
-        {/* ============================
-            TRACKING TIMELINE
-        ============================ */}
-        {!loading && trackingData.length > 0 && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold mb-4">
-              Service Progress Timeline
-            </h2>
+        {completedBookings.length === 0 ? (
+          <p className="text-gray-500">No completed bookings available.</p>
+        ) : (
+          <div className="space-y-4">
+            {completedBookings.map(b => (
+              <div
+                key={b._id}
+                className="flex justify-between items-center border p-4 rounded-lg"
+              >
+                <div>
+                  <p className="font-semibold">{b.serviceType}</p>
+                  <p className="text-sm text-gray-500">{b.userEmail}</p>
+                  <p className="text-sm text-gray-400">
+                    Completed on{" "}
+                    {new Date(b.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
 
-            <ol className="relative border-l border-primary pl-6">
-              {trackingData.map((item, index) => (
-                <li key={index} className="mb-8">
-                  <span className="absolute -left-3 top-1 w-6 h-6 rounded-full bg-primary"></span>
-
-                  <div className="card p-5">
-                    <h3 className="font-bold text-lg text-neutral">
-                      {item.status}
-                    </h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {new Date(item.date).toLocaleString()}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+                <button
+                  onClick={() => handleDelete(b._id)}
+                  className="px-4 py-2 rounded-lg border border-purple-600 text-purple-600 hover:bg-purple-50"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </div>
-    </section>
+    </div>
   );
 };
 

@@ -13,22 +13,19 @@ const useRole = () => {
   useEffect(() => {
     if (!user || loading) return;
 
-    const fetchRole = async () => {
-      try {
-        const res = await axiosSecure.get("/users");
-        const currentUser = res.data.find(
-          u => u.email === user.email
-        );
+    setRoleLoading(true);
 
-        setRole(currentUser?.role || "user");
-      } catch (err) {
-        setRole("user");
-      } finally {
+    axiosSecure
+      .get("/users/role")
+      .then(res => {
+        setRole(res.data.role);
+      })
+      .catch(() => {
+        setRole("user"); // safe fallback
+      })
+      .finally(() => {
         setRoleLoading(false);
-      }
-    };
-
-    fetchRole();
+      });
   }, [user, loading, axiosSecure]);
 
   return { role, roleLoading };

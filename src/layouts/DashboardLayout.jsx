@@ -1,229 +1,116 @@
 // src/layouts/DashboardLayout.jsx
-import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
-import {
-  FiHome,
-  FiUser,
-  FiLogOut,
-  FiCheckCircle,
-  FiUsers,
-  FiMenu,
-  FiX,
-} from "react-icons/fi";
-import { MdDashboard, MdPayment, MdDesignServices } from "react-icons/md";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { FiLogOut, FiCheckCircle, FiUsers } from "react-icons/fi";
+import { MdDashboard, MdDesignServices, MdTrackChanges, MdPayment } from "react-icons/md";
+import { FaArrowLeft } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
 
 const DashboardLayout = () => {
-  const { user, logOut } = useAuth();
+  const { logOut } = useAuth();
   const { role, roleLoading } = useRole();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  if (roleLoading) {
+  // ✅ Prevent rendering anything until role is fully loaded
+  if (roleLoading || !role) {
     return (
-      <div className="loading-indicator">
-        <img
-          src="https://i.postimg.cc/XXXXXX/styledecor-logo.png"
-          alt="Loading"
-          className="w-20 animate-pulse"
-        />
+      <div className="loading-indicator flex justify-center items-center h-screen">
+        <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
   }
 
-  /* =========================
-     LOGOUT (FIXED)
-  ========================= */
   const handleLogout = async () => {
-    try {
-      await logOut();
-      navigate("/login", { replace: true });
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    await logOut();
+    navigate("/login", { replace: true });
   };
 
-  /* =========================
-     ROLE BASED DASHBOARD LINK
-  ========================= */
-  const dashboardPath =
-    role === "admin"
-      ? "/dashboard/admin-home"
-      : role === "decorator"
-      ? "/dashboard/decorator-home"
-      : "/dashboard/user-home";
-
-  /* =========================
-     PAGE TITLE + BREADCRUMB
-  ========================= */
-  const pageTitle = location.pathname
-    .split("/")
-    .pop()
-    ?.replace("-", " ")
-    ?.toUpperCase();
-
   return (
-    <div className="min-h-screen flex bg-base-100">
-      {/* =========================
-          MOBILE HEADER
-      ========================= */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white shadow flex items-center justify-between px-4 py-3">
-        <button onClick={() => setSidebarOpen(true)}>
-          <FiMenu className="text-2xl" />
-        </button>
-
-        <img
-          src="https://i.postimg.cc/XXXXXX/styledecor-logo.png"
-          alt="StyleDecor"
-          className="w-28"
-        />
-      </div>
-
-      {/* =========================
-          SIDEBAR
-      ========================= */}
-      <aside
-        className={`fixed lg:static inset-y-0 left-0 z-40 w-72
-        bg-gradient-to-b from-white to-purple-50
-        border-r shadow-xl flex flex-col
-        transform transition-transform duration-300
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
-      >
-        {/* MOBILE CLOSE */}
-        <div className="lg:hidden p-4 flex justify-end">
-          <button onClick={() => setSidebarOpen(false)}>
-            <FiX className="text-2xl" />
-          </button>
-        </div>
-
-        {/* LOGO */}
-        <div className="p-6 border-b">
-          <img
-            src="https://i.postimg.cc/VvDRzKJS/Style-Decor-Logo.png"
-            alt="StyleDecor"
-            className="w-32 mx-auto"
-          />
-        </div>
-
-        {/* USER INFO */}
-        <div className="p-6 flex items-center gap-4 border-b">
-          <img
-            src={user?.photoURL || "https://i.postimg.cc/XXXXXX/user.png"}
-            alt="User"
-            className="w-12 h-12 rounded-full object-cover"
-          />
-          <div>
-            <h4 className="font-bold">{user?.displayName}</h4>
-            <p className="text-sm text-gray-500 capitalize">{role}</p>
-          </div>
-        </div>
-
-        {/* NAVIGATION */}
-        <nav className="flex-1 p-4 space-y-2">
-          <NavItem to={dashboardPath} icon={<MdDashboard />} label="Dashboard" />
-
+    <div className="min-h-screen flex">
+      {/* ================= SIDEBAR ================= */}
+      <aside className="w-72 bg-white border-r shadow-lg flex flex-col">
+        <nav className="p-4 space-y-2 flex-1">
+          {/* ================= USER ================= */}
           {role === "user" && (
             <>
-              <NavItem
-                to="/dashboard/my-services"
-                icon={<MdDesignServices />}
-                label="My Bookings"
-              />
-              <NavItem
-                to="/dashboard/payment-history"
-                icon={<MdPayment />}
-                label="Payment History"
-              />
+              <NavItem to="/dashboard/user-home" icon={<MdDashboard />} label="Dashboard" />
+              <NavItem to="/dashboard/my-services" icon={<MdDesignServices />} label="My Bookings" />
+              <NavItem to="/dashboard/payment-history" icon={<MdPayment />} label="Payment History" />
             </>
           )}
 
+          {/* ================= DECORATOR ================= */}
           {role === "decorator" && (
             <>
-              <NavItem
-                to="/dashboard/assigned-services"
-                icon={<FiCheckCircle />}
-                label="Assigned Services"
-              />
-              <NavItem
-                to="/dashboard/completed-services"
-                icon={<FiHome />}
-                label="Completed Services"
-              />
+              <NavItem to="/dashboard/decorator-home" icon={<MdDashboard />} label="Dashboard" />
+              <NavItem to="/dashboard/assigned-services" icon={<MdDesignServices />} label="Assigned Services" />
+              <NavItem to="/dashboard/completed-services" icon={<FiCheckCircle />} label="Completed Services" />
             </>
           )}
 
+          {/* ================= ADMIN ================= */}
           {role === "admin" && (
             <>
-              <NavItem
-                to="/dashboard/admin-home"
-                icon={<FiHome />}
-                label="Admin Home"
-              />
-              <NavItem
-                to="/dashboard/users"
-                icon={<FiUsers />}
-                label="User Management"
-              />
-              <NavItem
-                to="/dashboard/approve-decorator"
-                icon={<FiUser />}
-                label="Approve Decorators"
-              />
+              <NavItem to="/dashboard/admin-home" icon={<MdDashboard />} label="Dashboard" />
+              <NavItem to="/dashboard/users" icon={<FiUsers />} label="User Management" />
+              <NavItem to="/dashboard/approve-decorator" icon={<FiUsers />} label="Approve Decorators" />
+              <NavItem to="/dashboard/assigned-decorator" icon={<FiUsers />} label="Assign Decorator" />
+              <NavItem to="/dashboard/track-service" icon={<MdTrackChanges />} label="Service Status" />
             </>
           )}
         </nav>
 
-        {/* LOGOUT */}
+        {/* ================= BACK TO HOME BUTTON ================= */}
+        <div className="px-4 pb-3">
+          <button
+            onClick={() => navigate("/")}
+            className="
+              w-full flex items-center gap-3 px-4 py-3
+              rounded-xl border border-primary
+              text-primary font-semibold
+              hover:bg-primary hover:text-white
+              transition-all duration-300
+              group
+            "
+          >
+            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
+            Go Back To Home Page
+          </button>
+        </div>
+
+        {/* ================= LOGOUT ================= */}
         <div className="p-4 border-t">
           <button
             onClick={handleLogout}
-            className="btn btn-secondary w-full flex items-center justify-center gap-2"
+            className="btn btn-secondary w-full flex items-center gap-2"
           >
             <FiLogOut /> Logout
           </button>
         </div>
       </aside>
 
-      {/* =========================
-          MAIN CONTENT
-      ========================= */}
-      <main className="flex-1 lg:ml-0 pt-16 lg:pt-0 p-6 overflow-y-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">{pageTitle}</h1>
-          <p className="text-sm text-gray-500">
-            Dashboard / {pageTitle}
-          </p>
-        </div>
-
+      {/* ================= MAIN ================= */}
+      <main className="flex-1 p-6 overflow-y-auto bg-base-100">
         <Outlet />
       </main>
     </div>
   );
 };
 
-/* =========================
-   NAV ITEM
-========================= */
-const NavItem = ({ to, icon, label }) => {
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
-        ${
-          isActive
-            ? "bg-style-primary text-white shadow-md scale-[1.02]"
-            : "text-gray-700 hover:bg-style-primary/90 hover:text-white"
-        }`
-      }
-    >
-      <span className="text-xl">{icon}</span>
-      {label}
-    </NavLink>
-  );
-};
+const NavItem = ({ to, icon, label }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
+      `flex items-center gap-3 px-4 py-3 rounded-lg font-semibold ${
+        isActive
+          ? "bg-primary text-white"
+          : "text-gray-700 hover:bg-primary hover:text-white"
+      }`
+    }
+  >
+    {icon}
+    {label}
+  </NavLink>
+);
 
 export default DashboardLayout;

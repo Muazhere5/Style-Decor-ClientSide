@@ -1,6 +1,6 @@
 // src/pages/Auth/Login.jsx
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import SocialLogin from "./SocialLogin";
@@ -8,10 +8,6 @@ import SocialLogin from "./SocialLogin";
 const Login = () => {
   const { loginUser } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // ✅ FIX: default redirect is HOME
-  const from = location.state?.from?.pathname || "/";
 
   const {
     register,
@@ -19,11 +15,11 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     try {
       await loginUser(data.email, data.password);
-      toast.success("✨ Login successful! Welcome back.");
-      navigate(from, { replace: true });
+      toast.success("✨ Login successful!");
+      navigate("/", { replace: true });
     } catch {
       toast.error("❌ Invalid email or password");
     }
@@ -35,30 +31,34 @@ const Login = () => {
         Login to StyleDecor
       </h2>
 
-      <p className="text-center text-gray-500 mb-6">
-        Access your dashboard & manage your decoration services
+      <p className="text-center text-gray-500 mb-8">
+        Access your dashboard & manage your services
       </p>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Email */}
         <div>
           <label className="font-semibold">Email</label>
           <input
             type="email"
-            className="input input-bordered w-full mt-1"
+            className="input input-bordered w-full h-12 mt-2"
             {...register("email", { required: true })}
           />
-          {errors.email && <p className="text-error text-sm">Email is required</p>}
+          {errors.email && (
+            <p className="text-error text-sm mt-1">Email is required</p>
+          )}
         </div>
 
+        {/* Password */}
         <div>
           <label className="font-semibold">Password</label>
           <input
             type="password"
-            className="input input-bordered w-full mt-1"
+            className="input input-bordered w-full h-12 mt-2"
             {...register("password", { required: true })}
           />
           {errors.password && (
-            <p className="text-error text-sm">Password is required</p>
+            <p className="text-error text-sm mt-1">Password is required</p>
           )}
         </div>
 
@@ -73,7 +73,7 @@ const Login = () => {
 
       <p className="text-center mt-6">
         New here?{" "}
-        <Link to="/register" className="font-bold text-style-primary">
+        <Link to="/register" className="font-bold">
           Create an account
         </Link>
       </p>

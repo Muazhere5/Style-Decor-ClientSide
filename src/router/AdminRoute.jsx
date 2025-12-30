@@ -1,9 +1,10 @@
 // src/router/AdminRoute.jsx
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import useRole from "../hooks/useRole";
 
 const AdminRoute = ({ children }) => {
   const { role, roleLoading } = useRole();
+  const location = useLocation();
 
   if (roleLoading) {
     return (
@@ -13,8 +14,9 @@ const AdminRoute = ({ children }) => {
     );
   }
 
+  // ✅ ONLY admin allowed
   if (role !== "admin") {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/dashboard" state={{ from: location }} replace />;
   }
 
   return children;

@@ -1,125 +1,146 @@
-// src/pages/Dashboard/Payment/Payment.jsx
-import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
-import toast from "react-hot-toast";
-import { FaCreditCard, FaLock } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { FaLock } from "react-icons/fa";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
 
+/* 🔹 SAME PRICE LOGIC AS DASHBOARD */
+const calculatePrice = booking => {
+  let base = 10000;
+
+  if (booking.region === "Dhaka") base += 3000;
+  if (booking.region === "Chattogram") base += 2000;
+
+  if (booking.timeSlot === "Evening") base += 1500;
+  if (booking.timeSlot === "Night") base += 2500;
+
+  const eventDate = new Date(booking.bookingDate);
+  const day = eventDate.getDay();
+  if (day === 5 || day === 6) base += 2000;
+
+  return base;
+};
+
 const CheckoutForm = () => {
+  const { id } = useParams();
   const stripe = useStripe();
   const elements = useElements();
-  const { id } = useParams();
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [price, setPrice] = useState(0);
-  const [clientSecret, setClientSecret] = useState("");
+  const [booking, setBooking] = useState(null);
+  const [payAmount, setPayAmount] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Load booking price
+  /* 🔹 FETCH BOOKING + CALCULATE PRICE */
   useEffect(() => {
     axiosSecure.get("/bookings/user").then(res => {
-      const booking = res.data.find(b => b._id === id);
-      setPrice(booking?.price || 0);
+      const found = res.data.find(b => b._id === id);
+      if (found) {
+        found.price = calculatePrice(found);
+        setBooking(found);
+      }
     });
   }, [id, axiosSecure]);
 
-  // Create payment intent
-  useEffect(() => {
-    if (price > 0) {
-      axiosSecure
-        .post("/create-payment-intent", { price })
-        .then(res => setClientSecret(res.data.clientSecret));
-    }
-  }, [price, axiosSecure]);
-
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!stripe || !elements) return;
 
-    setLoading(true);
+    const enteredAmount = Number(payAmount);
 
-    const card = elements.getElement(CardElement);
-
-    const { paymentIntent, error } =
-      await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card,
-          billing_details: {
-            name: user?.displayName,
-            email: user?.email,
-          },
-        },
+    /* ❌ VALIDATION */
+    if (enteredAmount < booking.price) {
+      Swal.fire({
+        icon: "error",
+        title: "Payment Failed",
+        text: `Minimum payable amount is ৳${booking.price}`,
       });
-
-    if (error) {
-      toast.error(error.message);
-      setLoading(false);
       return;
     }
 
-    if (paymentIntent.status === "succeeded") {
-      await axiosSecure.post("/payments", {
-        bookingId: id,
-        amount: price,
-        transactionId: paymentIntent.id,
-        email: user.email,
-      });
+    setLoading(true);
 
-      toast.success("Payment Successful 🎉");
-      navigate("/dashboard/payment-success");
-    }
+    // 🔥 DEMO PAYMENT
+    const transactionId = "TXN-" + Math.random().toString(36).slice(2, 10);
+    const trackingId = "TRK-" + Math.random().toString(36).slice(2, 10);
+
+    await axiosSecure.post("/payments", {
+      bookingId: booking._id,
+      amount: enteredAmount,
+      transactionId,
+      trackingId,
+      email: user.email,
+      serviceType: booking.serviceType,
+      region: booking.region,
+    });
 
     setLoading(false);
+
+    /* ✅ SWEET ALERT SUCCESS */
+    Swal.fire({
+      icon: "success",
+      title: "Payment Successful 🎉",
+      text: "Your payment has been completed successfully.",
+      showCancelButton: true,
+      confirmButtonText: "Go to Dashboard",
+      cancelButtonText: "Payment Cancellation",
+    }).then(result => {
+      if (result.isConfirmed) {
+        navigate("/dashboard/user-home");
+      } else {
+        navigate("/dashboard/payment-cancelled");
+      }
+    });
   };
 
-  return (
-    <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="card w-full max-w-md bg-base-100 shadow-xl p-6">
-        <h2 className="text-2xl font-bold text-center mb-2">
-          Complete Your Payment
-        </h2>
-        <p className="text-center text-gray-500 mb-6">
-          Secure card payment powered by Stripe
-        </p>
+  if (!booking) return null;
 
-        <div className="mb-4 flex justify-between font-semibold">
-          <span>Total Amount</span>
-          <span className="text-style-primary">৳{price}</span>
+  return (
+    <div className="min-h-[70vh] flex justify-center items-center">
+      <div className="card w-full max-w-md p-6 shadow-xl">
+        <h2 className="text-2xl font-bold text-center mb-2">
+          Secure Payment
+        </h2>
+
+        <div className="flex justify-between font-semibold mb-4">
+          <span>Required Amount</span>
+          <span>৳{booking.price}</span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="p-4 border rounded-xl bg-white">
-            <CardElement
-              options={{
-                style: {
-                  base: {
-                    fontSize: "16px",
-                    color: "#1F2937",
-                    "::placeholder": { color: "#9CA3AF" },
-                  },
-                },
-              }}
-            />
+          {/* 💰 AMOUNT INPUT */}
+          <input
+            type="number"
+            className="input input-bordered w-full"
+            placeholder="Enter payment amount"
+            value={payAmount}
+            onChange={e => setPayAmount(e.target.value)}
+            required
+          />
+
+          <div className="p-4 border rounded-lg">
+            <CardElement />
           </div>
 
-          <button
-            className="btn btn-primary w-full"
-            disabled={!stripe || loading}
-          >
+          <button className="btn btn-primary w-full" disabled={loading}>
             {loading ? "Processing..." : "Pay Now"}
           </button>
         </form>
 
-        <div className="flex items-center justify-center gap-2 text-xs text-gray-400 mt-4">
-          <FaLock /> Encrypted & Secure Payment
-        </div>
+        <p className="text-xs text-center mt-4 text-gray-400 flex justify-center gap-2">
+          <FaLock /> Demo Stripe Secure Payment
+        </p>
       </div>
     </div>
   );

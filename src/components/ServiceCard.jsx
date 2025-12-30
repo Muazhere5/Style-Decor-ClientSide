@@ -1,34 +1,105 @@
-const ServiceCard = () => {
+import { Link } from "react-router-dom";
+
+export const servicesData = [
+  // HOME
+  {
+    id: 1,
+    name: "Luxury Living Room",
+    type: "Home",
+    cost: 12000,
+    title: "Modern Home Styling",
+    subtitle: "Premium furniture & lighting setup",
+    image:
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    id: 2,
+    name: "Minimal Home Decor",
+    type: "Home",
+    cost: 8000,
+    title: "Minimal & Clean",
+    subtitle: "Soft tones & elegant finishing",
+    image:
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+  },
+
+  // WEDDING
+  {
+    id: 3,
+    name: "Royal Wedding Stage",
+    type: "Wedding",
+    cost: 45000,
+    title: "Royal Wedding Setup",
+    subtitle: "Luxury floral & lighting design",
+    image:
+      "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    id: 4,
+    name: "Outdoor Wedding",
+    type: "Wedding",
+    cost: 35000,
+    title: "Garden Wedding Decor",
+    subtitle: "Elegant outdoor theme",
+    image:
+      "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=1200&q=80",
+  },
+
+  // EVENT
+  {
+    id: 5,
+    name: "Birthday Bash",
+    type: "Event",
+    cost: 15000,
+    title: "Birthday Party Setup",
+    subtitle: "Colorful & joyful decorations",
+    image:
+      "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    id: 6,
+    name: "Festive Celebration",
+    type: "Event",
+    cost: 18000,
+    title: "Festival Decor",
+    subtitle: "Bright festive design",
+    image:
+      "https://images.unsplash.com/photo-1504805572947-34fad45aed93?auto=format&fit=crop&w=1200&q=80",
+  },
+
+  // OFFICE
+  {
+    id: 7,
+    name: "Corporate Meeting",
+    type: "Office",
+    cost: 20000,
+    title: "Professional Office Decor",
+    subtitle: "Corporate theme setup",
+    image:
+      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=80",
+  },
+];
+
+const ServiceCard = ({ service }) => {
+  const { name, title, subtitle, image, cost, type } = service;
+
   return (
-    <div className="card hover:scale-105 transition duration-300">
-      
-      {/* 🔗 PUT SERVICE IMAGE FROM POSTIMAGE HERE */}
-      <figure>
-        <img
-          src="https://i.postimg.cc/YOUR-SERVICE-IMAGE.png"
-          alt="Service"
-          className="h-56 w-full object-cover"
-        />
-      </figure>
+    <div className="card bg-white shadow-lg hover:shadow-xl transition">
+      <img
+        src={image}
+        alt={name}
+        className="h-56 w-full object-cover rounded-t-lg"
+      />
 
-      <div className="card-body">
-        <h2 className="card-title text-style-primary">
-          Wedding Stage Decoration
-        </h2>
+      <div className="p-6 space-y-2">
+        <h3 className="text-xl font-bold">{title}</h3>
+        <p className="text-gray-500">{subtitle}</p>
+        <p className="font-semibold">Type: {type}</p>
+        <p className="font-bold text-style-primary">৳ {cost}</p>
 
-        <p className="text-sm opacity-80">
-          Premium floral & lighting setup for weddings and ceremonies.
-        </p>
-
-        <div className="flex justify-between items-center mt-4">
-          <span className="font-bold text-lg text-style-secondary">
-            ৳45,000
-          </span>
-
-          <button className="btn btn-primary">
-            View Details
-          </button>
-        </div>
+        <Link to="/booking" className="btn btn-primary w-full mt-4">
+          Book Service
+        </Link>
       </div>
     </div>
   );

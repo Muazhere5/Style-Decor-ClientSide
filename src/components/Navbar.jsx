@@ -1,18 +1,18 @@
+// src/components/Navbar.jsx
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
 
 const Navbar = () => {
-  const { user, logOut } = useAuth(); // ✅ FIXED NAME
+  const { user, logOut } = useAuth();
   const { role } = useRole();
-  const navigate = useNavigate(); // ✅ added
+  const navigate = useNavigate();
 
   const navLinkClass = ({ isActive }) =>
     isActive
       ? "text-style-secondary font-bold"
       : "hover:text-style-secondary transition font-semibold";
 
-  // ✅ FIXED LOGOUT HANDLER
   const handleLogout = async () => {
     try {
       await logOut();
@@ -26,7 +26,7 @@ const Navbar = () => {
     <div className="sticky top-0 z-50 bg-base-100 shadow-md">
       <div className="navbar max-w-7xl mx-auto px-4">
         
-        {/* ================= LEFT: LOGO ================= */}
+        {/* LEFT: LOGO */}
         <div className="navbar-start">
           <Link to="/" className="flex items-center gap-3">
             <img
@@ -40,26 +40,24 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* ================= CENTER: NAV LINKS ================= */}
+        {/* CENTER: NAV LINKS */}
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal gap-6 text-base">
             <li><NavLink to="/" className={navLinkClass}>Home</NavLink></li>
             <li><NavLink to="/booking" className={navLinkClass}>Booking</NavLink></li>
+            <li><NavLink to="/decorator" className={navLinkClass}>Decorator</NavLink></li>
             <li><NavLink to="/coverage" className={navLinkClass}>Coverage</NavLink></li>
-            <li><NavLink to="/track" className={navLinkClass}>Track Service</NavLink></li>
+            <li><NavLink to="/services" className={navLinkClass}>Services</NavLink></li>
+
           </ul>
         </div>
 
-        {/* ================= RIGHT: AUTH / PROFILE ================= */}
+        {/* RIGHT: AUTH */}
         <div className="navbar-end gap-4">
           {!user ? (
             <>
-              <Link to="/login" className="btn btn-outline">
-                Login
-              </Link>
-              <Link to="/register" className="btn btn-primary">
-                Register
-              </Link>
+              <Link to="/login" className="btn btn-outline">Login</Link>
+              <Link to="/register" className="btn btn-primary">Register</Link>
             </>
           ) : (
             <>
@@ -76,7 +74,6 @@ const Navbar = () => {
                 Dashboard
               </Link>
 
-              {/* ===== PROFILE DROPDOWN ===== */}
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="cursor-pointer">
                   <img
@@ -98,18 +95,8 @@ const Navbar = () => {
                   <div className="divider"></div>
 
                   <li>
-                    <Link
-                      to="/dashboard"
-                      className="btn btn-outline w-full"
-                    >
-                      My Profile
-                    </Link>
-                  </li>
-
-                  <li>
                     <button
-                      type="button"
-                      onClick={handleLogout} // ✅ FIXED
+                      onClick={handleLogout}
                       className="btn btn-secondary w-full"
                     >
                       Logout

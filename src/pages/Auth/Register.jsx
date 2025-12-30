@@ -1,3 +1,4 @@
+// src/pages/Auth/Register.jsx
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -16,46 +17,59 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
     reset,
+    formState: { errors },
   } = useForm();
 
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     try {
-      /* ================= IMAGE UPLOAD ================= */
+      /* =========================
+         1️⃣ Upload Image
+      ========================= */
       const formData = new FormData();
       formData.append("image", data.photo[0]);
 
       const imgRes = await axios.post(imageUploadURL, formData);
 
-      if (!imgRes.data.success) {
-        toast.error("❌ Image upload failed");
+      if (!imgRes?.data?.success) {
+        toast.error("Image upload failed");
         return;
       }
 
       const photoURL = imgRes.data.data.display_url;
 
-      /* ================= FIREBASE USER ================= */
-      await createUser(data.email, data.password);
+      /* =========================
+         2️⃣ Firebase Signup
+      ========================= */
+      const userCredential = await createUser(data.email, data.password);
+
+      if (!userCredential?.user) {
+        toast.error("Firebase account creation failed");
+        return;
+      }
+
       await updateUserProfile(data.name, photoURL);
 
-      /* ================= SAVE USER IN DB ================= */
+      /* =========================
+         3️⃣ Save User to Backend
+      ========================= */
       await axiosPublic.post("/users", {
         name: data.name,
         email: data.email,
         photo: photoURL,
+        role: "user",          // ✅ REQUIRED
+        createdAt: new Date(), // ✅ SAFE
       });
 
+      /* =========================
+         SUCCESS
+      ========================= */
       toast.success("🎉 Account created successfully!");
       reset();
       navigate("/login");
     } catch (error) {
-      console.error(error);
-      if (error.code === "auth/email-already-in-use") {
-        toast.error("❌ Email already exists! Try logging in.");
-      } else {
-        toast.error("❌ Registration failed");
-      }
+      console.error("Register Error:", error);
+      toast.error(error?.message || "❌ Registration failed");
     }
   };
 
@@ -65,67 +79,64 @@ const Register = () => {
         Create Account
       </h2>
 
-      <p className="text-center text-gray-500 mb-6">
+      <p className="text-center text-gray-500 mb-8">
         Join StyleDecor & book premium decoration services
       </p>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Name */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div>
           <label className="font-semibold">Full Name</label>
           <input
-            type="text"
-            placeholder="Your Name"
-            className="input input-bordered w-full mt-1"
+            className="input input-bordered w-full h-12 mt-2"
             {...register("name", { required: true })}
           />
           {errors.name && (
-            <p className="text-error text-sm">Name is required</p>
+            <p className="text-red-500 text-sm mt-1">Name is required</p>
           )}
         </div>
 
-        {/* Photo */}
         <div>
           <label className="font-semibold">Profile Photo</label>
           <input
             type="file"
-            accept="image/*"
-            className="file-input file-input-bordered w-full mt-1"
+            className="file-input file-input-bordered w-full h-12 mt-2"
             {...register("photo", { required: true })}
           />
           {errors.photo && (
-            <p className="text-error text-sm">Photo is required</p>
+            <p className="text-red-500 text-sm mt-1">Photo is required</p>
           )}
         </div>
 
-        {/* Email */}
         <div>
           <label className="font-semibold">Email</label>
           <input
             type="email"
-            placeholder="your@email.com"
-            className="input input-bordered w-full mt-1"
+            className="input input-bordered w-full h-12 mt-2"
             {...register("email", { required: true })}
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">Email is required</p>
+          )}
         </div>
 
-        {/* Password */}
         <div>
           <label className="font-semibold">Password</label>
           <input
             type="password"
-            placeholder="At least 6 characters"
-            className="input input-bordered w-full mt-1"
-            {...register("password", { required: true, minLength: 6 })}
+            className="input input-bordered w-full h-12 mt-2"
+            {...register("password", {
+              required: true,
+              minLength: 6,
+            })}
           />
           {errors.password && (
-            <p className="text-error text-sm">
+            <p className="text-red-500 text-sm mt-1">
               Password must be at least 6 characters
             </p>
           )}
         </div>
 
-        <button type="submit" className="btn btn-primary w-full text-lg">
+        <button className="btn btn-primary w-full text-lg">
           Register
         </button>
       </form>
