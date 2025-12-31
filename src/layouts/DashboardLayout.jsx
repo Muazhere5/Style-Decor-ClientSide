@@ -1,4 +1,4 @@
-// src/layouts/DashboardLayout.jsx
+
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { FiLogOut, FiCheckCircle, FiUsers } from "react-icons/fi";
 import { MdDashboard, MdDesignServices, MdTrackChanges, MdPayment } from "react-icons/md";
@@ -11,7 +11,7 @@ const DashboardLayout = () => {
   const { role, roleLoading } = useRole();
   const navigate = useNavigate();
 
-  // ✅ Prevent rendering anything until role is fully loaded
+  
   if (roleLoading || !role) {
     return (
       <div className="loading-indicator flex justify-center items-center h-screen">
@@ -27,19 +27,19 @@ const DashboardLayout = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* ================= SIDEBAR ================= */}
+      
       <aside className="w-72 bg-white border-r shadow-lg flex flex-col">
         <nav className="p-4 space-y-2 flex-1">
-          {/* ================= USER ================= */}
+          
           {role === "user" && (
             <>
               <NavItem to="/dashboard/user-home" icon={<MdDashboard />} label="Dashboard" />
-              <NavItem to="/dashboard/my-services" icon={<MdDesignServices />} label="My Bookings" />
+              <NavItem to="/dashboard/user-home" icon={<MdDashboard />} label="Dashboard" />
               <NavItem to="/dashboard/payment-history" icon={<MdPayment />} label="Payment History" />
             </>
           )}
 
-          {/* ================= DECORATOR ================= */}
+          
           {role === "decorator" && (
             <>
               <NavItem to="/dashboard/decorator-home" icon={<MdDashboard />} label="Dashboard" />
@@ -48,7 +48,7 @@ const DashboardLayout = () => {
             </>
           )}
 
-          {/* ================= ADMIN ================= */}
+          
           {role === "admin" && (
             <>
               <NavItem to="/dashboard/admin-home" icon={<MdDashboard />} label="Dashboard" />
@@ -60,7 +60,7 @@ const DashboardLayout = () => {
           )}
         </nav>
 
-        {/* ================= BACK TO HOME BUTTON ================= */}
+        
         <div className="px-4 pb-3">
           <button
             onClick={() => navigate("/")}
@@ -78,7 +78,7 @@ const DashboardLayout = () => {
           </button>
         </div>
 
-        {/* ================= LOGOUT ================= */}
+        
         <div className="p-4 border-t">
           <button
             onClick={handleLogout}
@@ -89,7 +89,7 @@ const DashboardLayout = () => {
         </div>
       </aside>
 
-      {/* ================= MAIN ================= */}
+      
       <main className="flex-1 p-6 overflow-y-auto bg-base-100">
         <Outlet />
       </main>
